@@ -33,4 +33,9 @@ public class Spot
 
     @OneToMany(mappedBy = "spot", cascade = CascadeType.ALL)
     List<Reservation> reservationList = new ArrayList<>();
+
+    public boolean getOccupied()
+    {
+        return occupied;
+    }
 }

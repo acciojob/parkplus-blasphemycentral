@@ -32,7 +32,7 @@ public class ReservationServiceImpl implements ReservationService {
         List<Spot> spots = spotRepository3.findBySpotType(spotType);
         Spot spo = null;
         int min = Integer.MAX_VALUE;
-        for(Spot spot : spots) if(!spot.isOccupied() && spot.getPricePerHour()<min)
+        for(Spot spot : spots) if(!spot.getOccupied() && spot.getPricePerHour()<min)
         {
             spo = spot;
             min = spot.getPricePerHour();
