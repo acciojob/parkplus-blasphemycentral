@@ -22,7 +22,53 @@ public class ReservationServiceImpl implements ReservationService {
     @Autowired
     ParkingLotRepository parkingLotRepository3;
     @Override
-    public Reservation reserveSpot(Integer userId, Integer parkingLotId, Integer timeInHours, Integer numberOfWheels) throws Exception {
+    public Reservation reserveSpot(Integer userId, Integer parkingLotId, Integer timeInHours, Integer numberOfWheels) throws Exception
+    {
+        SpotType spotType;
+        if (numberOfWheels == 2) spotType = SpotType.TWO_WHEELER;
+        else if(numberOfWheels == 4) spotType = SpotType.FOUR_WHEELER;
+        else spotType = SpotType.OTHERS;
 
+        List<Spot> spots = spotRepository3.findBySpotType(spotType);
+        Spot spo = null;
+        int min = Integer.MAX_VALUE;
+        for(Spot spot : spots) if(!spot.isOccupied() && spot.getPricePerHour()<min)
+        {
+            spo = spot;
+            min = spot.getPricePerHour();
+        }
+
+        if(min == Integer.MAX_VALUE) throw new Exception("Cannot make reservation");
+
+        User user;
+        try
+        {
+            user = userRepository3.findById(userId).get();
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Cannot make reservation");
+        }
+
+        ParkingLot parkingLot;
+        try
+        {
+            parkingLot = parkingLotRepository3.findById(parkingLotId).get();
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Cannot make reservation");
+        }
+        Reservation reservation = Reservation.builder().numberOfHours(timeInHours).build();
+        reservation.setSpot(spo);
+        reservation.setUser(user);
+
+        user.getReservationList().add(reservation);
+        spo.getReservationList().add(reservation);
+
+        userRepository3.save(user);
+        spotRepository3.save(spo);
+
+        return reservation;
     }
 }
