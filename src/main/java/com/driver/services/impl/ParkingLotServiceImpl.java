@@ -33,7 +33,9 @@ public class ParkingLotServiceImpl implements ParkingLotService {
         else if(numberOfWheels <= 4) spotType = SpotType.FOUR_WHEELER;
         else spotType = SpotType.OTHERS;
 
-        Spot spot = Spot.builder().spotType(spotType).pricePerHour(pricePerHour).build();
+        Spot spot = new Spot();
+        spot.setSpotType(spotType);
+        spot.setPricePerHour(pricePerHour);
         ParkingLot parkingLot = parkingLotRepository1.findById(parkingLotId).get();
 
         spot.setParkingLot(parkingLot);
